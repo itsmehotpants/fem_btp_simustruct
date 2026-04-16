@@ -196,6 +196,22 @@ simustruct_v3/
 
 ---
 
+## 📸 Interface Showcases
+
+Here are previews of the powerful interfaces provided in SimuStruct AI:
+
+### 1. Design Studio
+Provides complete structural design configuration capability including multi-material engineering properties, plate geometries, hole placement (Kirsch definitions), and complex load structures in a modern dark-mode aesthetics.
+
+![Design Studio Interface](assets/design_studio.png)
+
+### 2. Simulation Hub
+A gorgeous hub presenting realtime AI finite element rendering capability powered by PyTorch surrogate representations displaying stress concentration variables, heatmaps alongside direct FEM validations, and palmgren-miner fatigue thresholds!
+
+![Simulation Hub Interface](assets/simulation_hub.png)
+
+---
+
 ## 🧑‍💻 Make Commands
 
 ```bash
