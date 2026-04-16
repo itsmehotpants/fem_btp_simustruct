@@ -1,0 +1,35 @@
+services:
+  # 1. Compute Engine (FastAPI + PyTorch)
+  - type: web
+    name: simustruct-compute
+    env: docker
+    dockerfilePath: Dockerfile.compute
+    plan: free # Note: PyTorch runs heavy; Render free tier might struggle with memory constraints. Recommend Starter tier at minimum.
+    region: oregon 
+    healthCheckPath: /health
+
+  # 2. Controller (Java Spring Boot)
+  - type: web
+    name: simustruct-controller
+    env: docker
+    dockerfilePath: ./backend/Dockerfile.spring
+    plan: free
+    region: oregon
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: COMPUTE_ENGINE_URL
+        value: "https://simustruct-compute.onrender.com"
+
+  # 3. Streamlit Frontend
+  - type: web
+    name: simustruct-ui
+    env: docker
+    dockerfilePath: Dockerfile.streamlit
+    plan: free
+    region: oregon
+    healthCheckPath: /
+    envVars:
+      - key: BACKEND_URL
+        value: "https://simustruct-controller.onrender.com"
+      - key: COMPUTE_ENGINE_URL
+        value: "https://simustruct-compute.onrender.com"

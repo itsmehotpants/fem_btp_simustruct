@@ -1,0 +1,30 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies for matplotlib
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libglib2.0-0 libsm6 libxext6 libxrender-dev fonts-dejavu-core \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements_frontend.txt .
+RUN pip install --no-cache-dir -r requirements_frontend.txt
+
+COPY app.py .
+COPY assets/ ./assets/
+COPY src/materials.py ./src/materials.py
+COPY src/__init__.py ./src/__init__.py
+COPY src/fem_solver.py ./src/fem_solver.py
+COPY src/inference.py ./src/inference.py
+COPY src/scf_library.py ./src/scf_library.py
+COPY src/fatigue.py ./src/fatigue.py
+COPY src/data_utils.py ./src/data_utils.py
+COPY src/report.py ./src/report.py
+COPY models/ ./models/
+
+EXPOSE 8501
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD curl -f http://localhost:8501/_stcore/health || exit 1
+
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.headless=true", "--server.address=0.0.0.0"]
