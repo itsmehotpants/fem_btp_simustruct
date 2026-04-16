@@ -167,15 +167,10 @@ def run_ai_inference(
     geo_t = torch.tensor([geo_feats] * n_nodes, dtype=torch.float32, device=device)
     load_t = torch.tensor([load_feats] * n_nodes, dtype=torch.float32, device=device)
 
-    # Normalize coordinates to [0, 1]
-    coords_normalized = coords_t.clone()
-    coords_normalized[:, 0] /= max(width, 1e-6)
-    coords_normalized[:, 1] /= max(height, 1e-6)
-
-    # Forward pass
+    # Forward pass (network expects raw coordinates in meters)
     model.eval()
     with torch.no_grad():
-        pred = model(coords_normalized, mat_t, geo_t, load_t)
+        pred = model(coords_t, mat_t, geo_t, load_t)
 
     pred_np = pred.cpu().numpy()
 
@@ -213,7 +208,7 @@ def run_ai_inference(
         "stress_vm": stress_vm.tolist(),
         "displacement_x": disp_x.tolist(),
         "displacement_y": disp_y.tolist(),
-        "sigma_max_mpa": sigma_max,
+        "sigma_max_mpa": sigma_max / 1e6,
         "scf": scf,
         "safety_factor": safety_factor,
         "inference_ms": t_ms,

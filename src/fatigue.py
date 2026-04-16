@@ -88,12 +88,12 @@ def estimate_fatigue_life(
     else:
         sigma_a_corrected = sigma_amp
 
-    # Basquin equation: N = (σ_f' / σ_a_corrected)^(1/b)
+    # Basquin equation: N = (σ_a_corrected / σ_f')^(1/b)
     if sigma_a_corrected <= 0 or sigma_a_corrected == float("inf"):
         N_cycles = 0.0
     else:
         try:
-            N_cycles = (sigma_f_prime / sigma_a_corrected) ** (1 / b)
+            N_cycles = (sigma_a_corrected / sigma_f_prime) ** (1 / b)
             N_cycles = max(0, N_cycles)
         except (OverflowError, ZeroDivisionError):
             N_cycles = 0.0
@@ -153,7 +153,7 @@ def generate_sn_curve(
     N = []
     for s in S:
         if s > 0:
-            n = (sigma_f_prime / s) ** (1 / b)
+            n = (s / sigma_f_prime) ** (1 / b)
             N.append(max(1, n))
         else:
             N.append(1e10)
